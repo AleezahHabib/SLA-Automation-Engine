@@ -17,17 +17,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database
-    DATABASE_URL: str = Field(
-        default="postgresql://postgres:postgres@localhost:5432/sla_engine",
-        description="PostgreSQL connection string",
-    )
+    DATABASE_URL: str = Field(..., description="PostgreSQL connection string")
 
     # JWT Authentication
-    JWT_SECRET: str = Field(
-        default="sla-automation-engine-production-secret-jwt-key-32-chars-minimum!",
-        min_length=32,
-        description="Secret key for JWT token signing",
-    )
+    JWT_SECRET: str = Field(..., min_length=32, description="Secret key for JWT token signing")
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRY_HOURS: int = 12
 
