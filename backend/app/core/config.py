@@ -25,8 +25,8 @@ class Settings(BaseSettings):
     JWT_EXPIRY_HOURS: int = 12
 
     # CORS
-    ALLOWED_ORIGINS: str = Field("http://localhost:3000,http://127.0.0.1:3000,https://*.vercel.app", description="Comma-separated allowed origins")
-    ALLOWED_ORIGIN_REGEX: Optional[str] = Field(None, description="Anchored regex for preview deployment origins")
+    ALLOWED_ORIGINS: str = Field("http://localhost:3000,http://127.0.0.1:3000,https://sla-automation-engine.vercel.app", description="Comma-separated allowed origins")
+    ALLOWED_ORIGIN_REGEX: Optional[str] = Field(r"^https:\/\/.*\.vercel\.app$", description="Anchored regex for preview deployment origins")
 
     # SLA Worker
     SLA_WORKER_ENABLED: bool = True
