@@ -1,0 +1,129 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Clock, User } from "lucide-react";
+
+export default function RegisterCustomerPage() {
+  const [fullName, setFullName] = useState("");
+  const [company, setCompany] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { registerCustomer } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await registerCustomer({
+        full_name: fullName,
+        company: company || undefined,
+        email,
+        password,
+      });
+      router.push("/portal");
+    } catch (err: any) {
+      setError(err.message || "Failed to register customer portal account");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col justify-center bg-slate-950 px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/30">
+          <User className="h-6 w-6" />
+        </div>
+        <h2 className="mt-4 text-2xl font-bold tracking-tight text-white">
+          Customer Portal Registration
+        </h2>
+        <p className="mt-1.5 text-xs text-slate-400">
+          Self-register to raise tickets and track SLA guarantees
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
+          {error && (
+            <div className="mb-5 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-medium text-rose-400">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Full Name"
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Alice Johnson"
+            />
+
+            <Input
+              label="Company Name (optional)"
+              type="text"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              placeholder="Acme Corporation"
+            />
+
+            <Input
+              label="Email address"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="alice@acme.com"
+              hint="If you already receive support emails, use the same email to link your account."
+            />
+
+            <Input
+              label="Password (min 8 chars)"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+
+            <Button
+              type="submit"
+              className="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 shadow-emerald-600/20"
+              isLoading={isLoading}
+              size="lg"
+            >
+              Create Account & Enter Portal
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
