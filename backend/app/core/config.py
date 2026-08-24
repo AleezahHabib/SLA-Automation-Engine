@@ -17,15 +17,22 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database
-    DATABASE_URL: str = Field(..., description="PostgreSQL connection string")
+    DATABASE_URL: str = Field(
+        default="postgresql://postgres:postgres@localhost:5432/sla_engine",
+        description="PostgreSQL connection string",
+    )
 
     # JWT Authentication
-    JWT_SECRET: str = Field(..., min_length=32, description="Secret key for JWT token signing")
+    JWT_SECRET: str = Field(
+        default="sla-automation-engine-production-secret-jwt-key-32-chars-minimum!",
+        min_length=32,
+        description="Secret key for JWT token signing",
+    )
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRY_HOURS: int = 12
 
     # CORS
-    ALLOWED_ORIGINS: str = Field("http://localhost:3000,http://127.0.0.1:3000", description="Comma-separated allowed origins")
+    ALLOWED_ORIGINS: str = Field("http://localhost:3000,http://127.0.0.1:3000,https://*.vercel.app", description="Comma-separated allowed origins")
     ALLOWED_ORIGIN_REGEX: Optional[str] = Field(None, description="Anchored regex for preview deployment origins")
 
     # SLA Worker
@@ -78,7 +85,5 @@ class Settings(BaseSettings):
         return v
 
 
-settings = Settings(
-    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sla_engine",
-    JWT_SECRET="sla-engine-super-secret-key-that-is-at-least-32-chars-long-prod",
-)
+settings = Settings()
+
