@@ -133,6 +133,12 @@ function TicketsDashboardContent() {
   const closedCount = summary?.by_status[TicketStatus.CLOSED] || 0;
   const breachedCount = summary?.breached ?? 0;
   const unassignedCount = summary?.unassigned ?? 0;
+  const isBreachedActive = breachedOnly;
+  const isUnassignedActive = unassignedOnly;
+  const isOpenActive = !breachedOnly && !unassignedOnly && statusFilter === TicketStatus.OPEN;
+  const isInProgressActive = !breachedOnly && !unassignedOnly && statusFilter === TicketStatus.IN_PROGRESS;
+  const isResolvedActive = !breachedOnly && !unassignedOnly && statusFilter === TicketStatus.RESOLVED;
+  const isClosedActive = !breachedOnly && !unassignedOnly && statusFilter === TicketStatus.CLOSED;
 
   return (
     <AppShell
@@ -150,35 +156,48 @@ function TicketsDashboardContent() {
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <TicketIcon className="h-5 w-5 text-indigo-600" />
-              {myQueueOnly
-                ? "My Assigned Work Queue"
-                : unassignedOnly
-                ? "Unassigned Intake Pool"
-                : breachedOnly
+              {isBreachedActive
                 ? "Breached & Overdue Tickets"
+                : isUnassignedActive
+                ? "Unassigned Intake Pool"
+                : isOpenActive
+                ? "Open Tickets"
+                : isInProgressActive
+                ? "In Progress Tickets"
+                : isResolvedActive
+                ? "Resolved Tickets"
+                : isClosedActive
+                ? "Closed Tickets"
+                : myQueueOnly
+                ? "My Assigned Work Queue"
                 : "Active Ticket Operations"}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Showing tickets ordered by SLA deadline urgency.
             </p>
           </div>
-          <Link href="/tickets/new">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Create Ticket
-            </Button>
-          </Link>
         </div>
 
-        {/* Operational KPI Metric Cards */}
+        {/* Operational KPI Metric Cards (Mutually Exclusive Single Selection) */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <Card
             onClick={() => {
-              setBreachedOnly((prev) => !prev);
+              if (isBreachedActive) {
+                setBreachedOnly(false);
+                setStatusFilter("active");
+              } else {
+                setBreachedOnly(true);
+                setUnassignedOnly(false);
+                setMyQueueOnly(false);
+                setStatusFilter("all");
+                setPriorityFilter("all");
+              }
               setPage(1);
             }}
             className={`cursor-pointer transition-all border-l-4 border-l-rose-500 ${
-              breachedOnly ? "ring-2 ring-rose-500 shadow-md bg-rose-50/20" : "hover:border-slate-300"
+              isBreachedActive
+                ? "ring-2 ring-rose-500 shadow-md bg-rose-50/30 dark:bg-rose-950/30"
+                : "hover:border-slate-300"
             }`}
           >
             <CardHeader className="p-3 pb-1">
@@ -194,12 +213,22 @@ function TicketsDashboardContent() {
           {isAdmin && (
             <Card
               onClick={() => {
-                setUnassignedOnly((prev) => !prev);
-                setMyQueueOnly(false);
+                if (isUnassignedActive) {
+                  setUnassignedOnly(false);
+                  setStatusFilter("active");
+                } else {
+                  setUnassignedOnly(true);
+                  setBreachedOnly(false);
+                  setMyQueueOnly(false);
+                  setStatusFilter("active");
+                  setAssignedAgentFilter("all");
+                }
                 setPage(1);
               }}
               className={`cursor-pointer transition-all border-l-4 border-l-orange-500 ${
-                unassignedOnly ? "ring-2 ring-orange-500 shadow-md bg-orange-50/20" : "hover:border-slate-300"
+                isUnassignedActive
+                  ? "ring-2 ring-orange-500 shadow-md bg-orange-50/30 dark:bg-orange-950/30"
+                  : "hover:border-slate-300"
               }`}
             >
               <CardHeader className="p-3 pb-1">
@@ -215,11 +244,21 @@ function TicketsDashboardContent() {
 
           <Card
             onClick={() => {
-              setStatusFilter(TicketStatus.OPEN);
-              setBreachedOnly(false);
+              if (isOpenActive) {
+                setStatusFilter("active");
+              } else {
+                setStatusFilter(TicketStatus.OPEN);
+                setBreachedOnly(false);
+                setUnassignedOnly(false);
+                setMyQueueOnly(false);
+              }
               setPage(1);
             }}
-            className="cursor-pointer hover:border-slate-300 border-l-4 border-l-blue-500"
+            className={`cursor-pointer transition-all border-l-4 border-l-blue-500 ${
+              isOpenActive
+                ? "ring-2 ring-blue-500 shadow-md bg-blue-50/30 dark:bg-blue-950/30"
+                : "hover:border-slate-300"
+            }`}
           >
             <CardHeader className="p-3 pb-1">
               <CardTitle className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
@@ -233,11 +272,21 @@ function TicketsDashboardContent() {
 
           <Card
             onClick={() => {
-              setStatusFilter(TicketStatus.IN_PROGRESS);
-              setBreachedOnly(false);
+              if (isInProgressActive) {
+                setStatusFilter("active");
+              } else {
+                setStatusFilter(TicketStatus.IN_PROGRESS);
+                setBreachedOnly(false);
+                setUnassignedOnly(false);
+                setMyQueueOnly(false);
+              }
               setPage(1);
             }}
-            className="cursor-pointer hover:border-slate-300 border-l-4 border-l-amber-500"
+            className={`cursor-pointer transition-all border-l-4 border-l-amber-500 ${
+              isInProgressActive
+                ? "ring-2 ring-amber-500 shadow-md bg-amber-50/30 dark:bg-amber-950/30"
+                : "hover:border-slate-300"
+            }`}
           >
             <CardHeader className="p-3 pb-1">
               <CardTitle className="text-[11px] font-semibold uppercase tracking-wider text-amber-600">
@@ -251,11 +300,21 @@ function TicketsDashboardContent() {
 
           <Card
             onClick={() => {
-              setStatusFilter(TicketStatus.RESOLVED);
-              setBreachedOnly(false);
+              if (isResolvedActive) {
+                setStatusFilter("active");
+              } else {
+                setStatusFilter(TicketStatus.RESOLVED);
+                setBreachedOnly(false);
+                setUnassignedOnly(false);
+                setMyQueueOnly(false);
+              }
               setPage(1);
             }}
-            className="cursor-pointer hover:border-slate-300 border-l-4 border-l-emerald-500"
+            className={`cursor-pointer transition-all border-l-4 border-l-emerald-500 ${
+              isResolvedActive
+                ? "ring-2 ring-emerald-500 shadow-md bg-emerald-50/30 dark:bg-emerald-950/30"
+                : "hover:border-slate-300"
+            }`}
           >
             <CardHeader className="p-3 pb-1">
               <CardTitle className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600">
@@ -269,11 +328,21 @@ function TicketsDashboardContent() {
 
           <Card
             onClick={() => {
-              setStatusFilter(TicketStatus.CLOSED);
-              setBreachedOnly(false);
+              if (isClosedActive) {
+                setStatusFilter("active");
+              } else {
+                setStatusFilter(TicketStatus.CLOSED);
+                setBreachedOnly(false);
+                setUnassignedOnly(false);
+                setMyQueueOnly(false);
+              }
               setPage(1);
             }}
-            className="cursor-pointer hover:border-slate-300 border-l-4 border-l-slate-400"
+            className={`cursor-pointer transition-all border-l-4 border-l-slate-400 ${
+              isClosedActive
+                ? "ring-2 ring-slate-500 shadow-md bg-slate-100/50 dark:bg-slate-800/50"
+                : "hover:border-slate-300"
+            }`}
           >
             <CardHeader className="p-3 pb-1">
               <CardTitle className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">

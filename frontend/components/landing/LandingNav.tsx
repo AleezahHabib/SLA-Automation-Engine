@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { Role } from "@/types/enums";
-import { Clock, Shield, Sparkles, User, ArrowRight, Menu, X, CheckCircle2 } from "lucide-react";
+import { Clock, ArrowRight, Menu, X, Shield, Sparkles } from "lucide-react";
 
 export function LandingNav() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -27,75 +27,60 @@ export function LandingNav() {
 
   const getDashboardLabel = () => {
     if (!user) return "Sign In";
-    if (user.role === Role.CUSTOMER) return "Open Customer Portal";
-    return "Open Support Desk";
+    if (user.role === Role.CUSTOMER) return "Go to Portal";
+    return "Go to Workspace";
   };
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 shadow-lg shadow-black/20 py-3"
+          ? "bg-slate-950/80 backdrop-blur-lg border-b border-slate-800/80 shadow-lg shadow-black/20 py-3.5"
           : "bg-transparent py-5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo & Platform Name */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 text-white shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-              <Clock className="h-5 w-5 animate-pulse-subtle" />
-              <div className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-              </div>
+          {/* Brand Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 group-hover:scale-105 transition-transform">
+              <Clock className="h-5 w-5" />
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
-                  SLA Automation Engine
-                </span>
-                <span className="hidden sm:inline-flex items-center rounded-md bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-400 border border-indigo-500/20">
-                  v1.0 Live
-                </span>
-              </div>
-              <span className="text-[11px] text-slate-400 font-normal">
-                Autonomous Support Intelligence
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
+                SLA Engine
+              </span>
+              <span className="inline-flex items-center rounded-md bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-400 border border-indigo-500/20">
+                v1.0
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-7">
+          {/* Center Nav Links */}
+          <div className="hidden md:flex items-center gap-8">
             <a
               href="#features"
               className="text-xs font-medium text-slate-300 hover:text-white transition-colors"
             >
-              Engine Features
+              Features
             </a>
             <a
-              href="#simulator"
+              href="#how-it-works"
               className="text-xs font-medium text-slate-300 hover:text-white transition-colors"
             >
-              Live SLA Simulator
+              How It Works
             </a>
             <a
-              href="#state-machine"
+              href="#portals"
               className="text-xs font-medium text-slate-300 hover:text-white transition-colors"
             >
-              Lifecycle State Machine
+              Portals &amp; Roles
             </a>
             <a
-              href="#demo-credentials"
+              href="#demo-accounts"
               className="text-xs font-medium text-slate-300 hover:text-white transition-colors"
             >
               Demo Accounts
-            </a>
-            <a
-              href="#architecture"
-              className="text-xs font-medium text-slate-300 hover:text-white transition-colors"
-            >
-              Architecture
             </a>
           </div>
 
@@ -103,16 +88,12 @@ export function LandingNav() {
           <div className="hidden md:flex items-center gap-3">
             {!isLoading && isAuthenticated && user ? (
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/90 px-3 py-1 text-xs text-slate-300">
-                  <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                  <span className="font-medium text-slate-200">{user.full_name || user.email}</span>
-                  <span className="text-[10px] uppercase font-semibold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
-                    {user.role}
-                  </span>
-                </div>
+                <span className="text-xs text-slate-300 font-medium">
+                  {user.full_name || user.email}
+                </span>
                 <Link
                   href={getDashboardLink()}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/30 hover:from-indigo-500 hover:to-violet-500 transition-all hover:scale-[1.02]"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/30 hover:bg-indigo-500 transition-all"
                 >
                   {getDashboardLabel()}
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -128,16 +109,16 @@ export function LandingNav() {
                 </Link>
                 <Link
                   href="/register/customer"
-                  className="rounded-lg border border-slate-700 bg-slate-900/80 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:border-slate-600 hover:bg-slate-800 transition-colors"
+                  className="rounded-lg border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-800 transition-colors"
                 >
-                  Customer Portal
+                  Customer Sign Up
                 </Link>
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/30 hover:from-indigo-500 hover:to-violet-500 transition-all hover:scale-[1.02]"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 transition-all"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-indigo-200" />
-                  Launch Workspace
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Launch App
                 </Link>
               </div>
             )}
@@ -149,7 +130,6 @@ export function LandingNav() {
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
-              aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -165,35 +145,28 @@ export function LandingNav() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
               >
-                Engine Features
+                Features
               </a>
               <a
-                href="#simulator"
+                href="#how-it-works"
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
               >
-                Live SLA Simulator
+                How It Works
               </a>
               <a
-                href="#state-machine"
+                href="#portals"
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
               >
-                Lifecycle State Machine
+                Portals &amp; Roles
               </a>
               <a
-                href="#demo-credentials"
+                href="#demo-accounts"
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
               >
                 Demo Accounts
-              </a>
-              <a
-                href="#architecture"
-                onClick={() => setMobileMenuOpen(false)}
-                className="rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
-              >
-                Architecture
               </a>
               <div className="mt-2 pt-3 border-t border-slate-800 flex flex-col gap-2">
                 <Link
@@ -201,14 +174,14 @@ export function LandingNav() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-center rounded-lg bg-indigo-600 py-2.5 text-xs font-semibold text-white shadow-md"
                 >
-                  Sign In to Workspace
+                  Sign In
                 </Link>
                 <Link
                   href="/register/customer"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-center rounded-lg border border-slate-700 bg-slate-800 py-2.5 text-xs font-semibold text-slate-200"
                 >
-                  Register Customer Portal
+                  Customer Sign Up
                 </Link>
               </div>
             </div>
