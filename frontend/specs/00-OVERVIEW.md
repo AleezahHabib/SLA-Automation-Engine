@@ -130,7 +130,7 @@ Every route has exactly one owning spec. A spec may not describe a route it does
 | `/portal/tickets/new` | `customer` | `06-TICKET-DETAIL.md` |
 | `/portal/tickets/[ticketId]` | `customer` | `06-TICKET-DETAIL.md` |
 
-`/` resolves by session: unauthenticated to `/login`, `agent` to `/agent/dashboard`, `admin` to `/admin/dashboard`, `customer` to `/portal/dashboard`.
+`/` renders the public Landing Page showcasing autonomous SLA monitoring, interactive playground, state machine guarantees, and demonstration accounts launchpad. It provides session-aware navigation into `/login`, `/portal`, and `/tickets`.
 
 Route guards are **cosmetic**. They prevent a confusing UI, not unauthorised access. Authorisation is enforced by the backend on every request.
 

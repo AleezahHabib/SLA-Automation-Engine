@@ -107,16 +107,18 @@ There are two registration screens, on separate routes rather than one form with
 
 A single form with a "sign up as" selector would place the role decision in the client's hands visually, even though the server ignores it. Two routes make the separation structural.
 
-### B5 — Role-based landing
+### B5 — Landing Page and Role Navigation
 
-After a successful login or a rehydrated session, `/` resolves as follows:
+The root route `/` serves the public Landing Page showcasing SLA engine guarantees, interactive playground, and demonstration accounts launchpad. It detects session state dynamically: authenticated users see a direct workspace entry badge/button (`/portal` for `customer`, `/tickets` or `/agent/dashboard` for `agent`, `/tickets` or `/admin/dashboard` for `admin`), while visitors are presented with direct sign-in, registration, and 1-click test credentials.
+
+After a successful form login on `/login`, the destination resolves as follows:
 
 | Session | Destination |
 |---|---|
 | none | `/login` |
-| role `agent` | `/agent/dashboard` |
-| role `admin` | `/admin/dashboard` |
-| role `customer` | `/portal/dashboard` |
+| role `agent` | `/agent/dashboard` / `/tickets` |
+| role `admin` | `/admin/dashboard` / `/tickets` |
+| role `customer` | `/portal/dashboard` / `/portal` |
 
 If a user arrived at a guarded route while signed out, that path is preserved and used as the destination after login instead of the role default, provided it is permitted for their role.
 
